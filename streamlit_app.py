@@ -115,7 +115,7 @@ def main():
     try:
         # App title and description
         st.title("Startup Investment Analysis in India")
-        st.markdown("Exploring startup funding trends from 2001 to 2024")
+        st.markdown("Exploring startup funding trends from 2015 to 2020")
 
         # Load the data
         df = load_and_clean_data()
