@@ -1,4 +1,4 @@
-# 🚀 Startup Investment Analysis (India, 2001–2024)
+# 🚀 Startup Investment Analysis (India, 2015–2020)
 
 📊 **Interactive Data Analysis App built with Streamlit**  
 🔍 Discover funding trends, top industries, cities, and startups across two decades of Indian startup growth.
@@ -7,7 +7,7 @@
 
 ## 🔥 Features
 
-✅ Cleaned & preprocessed real-world funding data (2001–2024)  
+✅ Cleaned & preprocessed real-world funding data (2015–2020)  
 ✅ Dynamic filters (by year, city)  
 ✅ Visual insights:  
 - 📈 Monthly investment trends  
@@ -35,7 +35,9 @@
 
 ---
 
-## 🚀 How to Run
+## 🚀 How to Run (Launch the app)
+streamlit run streamlit_app.py
+
 
 ### 🔧 Setup
 
