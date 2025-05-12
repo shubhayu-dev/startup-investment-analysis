@@ -183,7 +183,19 @@ def main():
             .sort_values(ascending=False)
             .head(10)
         )
-        st.dataframe(top_startups.reset_index(), use_container_width=True)
+
+        # Add a 'Ranking' column starting from 1
+        top_startups = top_startups.reset_index()
+        top_startups['Ranking'] = top_startups.index + 1
+
+        # Reorder the columns to display 'Ranking' first and reset the index to avoid the default index column
+        top_startups = top_startups[['Ranking', 'startup_name', 'amount_in_usd']]
+
+        # Set 'Ranking' as the index to remove the default index column
+        top_startups.set_index('Ranking', inplace=True)
+
+        st.dataframe(top_startups, use_container_width=True)
+
 
         # Monthly Funding Trend
         st.subheader("Monthly Funding Trend")
