@@ -4,6 +4,66 @@ import plotly.express as px
 import os
 import sys
 
+#Adding a dark/light theme toggle in streamlit
+
+import streamlit as st
+
+# Theme toggle
+theme = st.radio("🌗 Choose Theme", ["Light", "Dark"], horizontal=True, key="theme_toggle")
+
+# Apply dark theme only if selected
+if theme == "Dark":
+    st.markdown("""
+    <style>
+        /* Overall background */
+        .stApp {
+            background-color: #0e1117;
+            color: #f5f5f5;
+        }
+
+        /* Sidebar */
+        section[data-testid="stSidebar"] {
+            background-color: #161b22 !important;
+        }
+
+        /* Widget containers */
+        .css-1v0mbdj, .css-1d391kg, .css-1cpxqw2, .stSelectbox, .stRadio {
+            background-color: #1f2937 !important;
+            color: #f5f5f5 !important;
+        }
+
+        /* All headings and paragraph text */
+        h1, h2, h3, h4, h5, h6, p, label, div {
+            color: #f5f5f5 !important;
+        }
+
+        /* Buttons */
+        .stButton>button {
+            background-color: #30363d;
+            color: white;
+            border: none;
+        }
+
+        /* Charts and plot backgrounds (like Plotly/Altair) */
+        .element-container iframe {
+            background-color: #0e1117 !important;
+        }
+
+        /* Dropdown arrows and text */
+        .stSelectbox>div>div {
+            background-color: #1f2937 !important;
+            color: #f5f5f5 !important;
+        }
+
+        /* Fix for metric, expander, etc. */
+        .css-1cpxqw2, .css-qrbaxs {
+            background-color: #1f1f1f !important;
+            color: white !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 def load_and_clean_data():
     """
     Load and clean startup funding data with comprehensive error handling
