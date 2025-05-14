@@ -396,7 +396,7 @@ def main():
     st.markdown("Interactive dashboard for exploring funding trends (2015-2020). *Data courtesy of Kaggle.*")
 
     # Load and clean the dataset
-    data_file_path = '/home/shubhayu/Desktop/startup-investment-analysis/data/cleaned_startup_funding.csv'
+    data_file_path = 'data/cleaned_startup_funding.csv'
     df = load_and_clean_data(data_file_path)
     # If data loading fails or results in an empty DataFrame, show a warning and stop
     if df.empty: 
