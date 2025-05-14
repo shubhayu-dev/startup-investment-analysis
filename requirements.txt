@@ -22,7 +22,7 @@ jmespath==1.0.1
 jsonschema==4.21.1
 jsonschema-specifications==2023.12.1
 markupsafe==2.1.5
-numpy==1.26.4
+numpy==1.25.2
 packaging==23.2
 pandas==2.2.2
 pillow==10.3.0
