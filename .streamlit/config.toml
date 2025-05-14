@@ -1,6 +1,7 @@
 [theme]
-primaryColor = "#abc9bd"
-backgroundColor = "#d7f4ef"
-secondaryBackgroundColor = "#FFD2D2"
+base = "light" # This makes "Light" your default
+primaryColor = "#abc9bd" # Example primary color
+backgroundColor = "#d7f4ef" # Light background
+secondaryBackgroundColor = "#FFD2D2" # Slightly off-white for cards/widgets
 textColor = "black"
 font = "sans serif"
