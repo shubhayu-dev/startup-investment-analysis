@@ -51,4 +51,5 @@ tzdata==2024.1
 urllib3==2.2.1
 validators==0.28.1
 watchdog==4.0.0
+ydata-profiling==4.6.4
 zipp==3.18.1
