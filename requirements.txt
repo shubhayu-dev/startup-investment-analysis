@@ -34,6 +34,7 @@ pydantic-core==2.18.1
 pyparsing==3.1.2
 pyrsistent==0.20.0
 python-dateutil==2.9.0.post0
+python-dotenv
 pytz==2024.1
 referencing==0.35.1
 requests==2.31.0
