@@ -181,7 +181,7 @@ def load_and_clean_data(file_path: str) -> pd.DataFrame:
                         'Seed/ Angel Fun': 'Seed/Angel Fund', 'Seed / Angel Fu': 'Seed/Angel Fund', 'Seed/Angel Fun': 'Seed/Angel Fund',
                         'Seed / Angle Fu': 'Seed/Angel Fund', 'Angel / Seed Fu': 'Seed/Angel Fund', 'SeedFunding': 'Seed Funding',
                         'Crowd funding': 'Crowd Funding', 'Angel': 'Angel Round', 'Private Equity R': 'Private Equity', 'Debt Financing': 'Debt Funding', 
-                        'Private\Equity': 'Private Equity', 'Seed\Funding': 'Seed Funding', 'Seed Round': 'Seed Funding', 'Seed': 'Seed Funding'
+                        'Private\\Equity': 'Private Equity', 'Seed\\Funding': 'Seed Funding', 'Seed Round': 'Seed Funding', 'Seed': 'Seed Funding'
                     }, regex=False)
                 # General cleanup for empty strings or common NaN string representations to 'Unknown'
                 df.loc[df[col_name].isin(['', 'Nan', 'NaN', 'N/A']), col_name] = 'Unknown' 
