@@ -208,9 +208,9 @@ def load_and_clean_data(file_path: str) -> pd.DataFrame:
         return pd.DataFrame()
 
 
-def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label, 
-                        color_col=None, template='plotly_white', orientation=None, 
-                        barmode=None, nbinsx_hist=None, text_auto=False, 
+def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label,
+                        color_col=None, template='plotly_white', orientation=None,
+                        barmode=None, nbinsx_hist=None, text_auto=False,
                         log_y=False, log_x=False):
     """
     Creates a Plotly chart with common configurations and error handling.
@@ -229,44 +229,45 @@ def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label,
         barmode (str, optional): For bar charts ('group', 'stack', 'relative').
         nbinsx_hist (int, optional): Suggested number of bins for x-axis of histograms.
         text_auto (bool or str): If True or format string, displays text on marks.
+                                 Will only be passed to chart_func if not False.
         log_y (bool): If True, sets y-axis to logarithmic scale.
         log_x (bool): If True, sets x-axis to logarithmic scale.
 
     Returns:
         plotly.graph_objects.Figure: The generated Plotly figure, or None if an error occurs or data is empty.
     """
-    if data.empty: 
-        # Display an informative message if no data is available for the chart
+    if data.empty:
         st.info(f"No data available for chart generation (context: {title if title and title.strip() != '' else 'Untitled Chart'})")
         return None
     try:
-        # Handle cases where no title is desired by passing None to Plotly (prevents "undefined" text)
         effective_title = title if title and title.strip() != "" else None
 
-        # Prepare dictionary of arguments for the Plotly Express function
         fig_args = {
-            'data_frame': data, 
-            'x': x_col, 
-            'y': y_col, 
-            'labels': {x_col: x_label, y_col: y_label, color_col: color_col or ''}, # Dynamic labels
-            'title': effective_title, 
-            'color': color_col, 
-            'template': template, 
-            'orientation': orientation, 
-            'barmode': barmode, 
-            'text_auto': text_auto, 
-            'log_y': log_y, 
-            'log_x': log_x  
+            'data_frame': data,
+            'x': x_col,
+            'y': y_col, # y_col can be None, it will be filtered out by fig_args_cleaned if None
+            'labels': {x_col: x_label, y_col: y_label, color_col: color_col or ''},
+            'title': effective_title,
+            'color': color_col,
+            'template': template,
+            'orientation': orientation,
+            'barmode': barmode,
+            'log_y': log_y,
+            'log_x': log_x
         }
-        
+
+        # Conditionally add text_auto to fig_args ONLY if it's not False.
+        # This prevents passing text_auto=False to functions like px.line that don't support it.
+        if text_auto is not False:
+            fig_args['text_auto'] = text_auto
+
         # Special handling for histogram's number of bins on x-axis
-        # px.histogram accepts 'nbinsx' directly as an argument.
         if chart_func == px.histogram and nbinsx_hist is not None:
-            fig_args['nbinsx'] = nbinsx_hist 
+            fig_args['nbinsx'] = nbinsx_hist
 
         # Clean out any arguments that are None, as Plotly Express prefers them to be absent entirely
-        fig_args_cleaned = {k: v for k, v in fig_args.items() if v is not None} 
-        
+        fig_args_cleaned = {k: v for k, v in fig_args.items() if v is not None}
+
         # Create the Plotly figure using the specified chart function and arguments
         fig = chart_func(**fig_args_cleaned)
 
@@ -276,11 +277,18 @@ def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label,
         else:
             # If no title, reduce the top margin to avoid excessive empty space
             fig.update_layout(margin=dict(t=30)) # Adjust top margin value as needed
+        
+        # Explicitly set axis titles as the 'labels' dict might not cover all cases (e.g. histogram y-axis)
+        fig.update_xaxes(title_text=x_label)
+        fig.update_yaxes(title_text=y_label)
+
 
         return fig # Return the created figure
-    except Exception as e: 
-        # Display an error message if chart creation fails
+    except Exception as e:
         st.error(f"Chart creation error ('{title if title else 'Untitled Chart'}'): {e}")
+        # For more detailed debugging during development, you can uncomment the next lines:
+        # import traceback
+        # st.error(traceback.format_exc())
         return None # Return None on error
 
 # --- Main Application ---
