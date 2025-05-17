@@ -209,9 +209,6 @@ def load_and_clean_data(file_path: str) -> pd.DataFrame:
         st.error(f"An unexpected error occurred during data loading/cleaning: {e}"); 
         return pd.DataFrame()
 
-st.subheader("Direct Plotly Express Histogram Test")
-
-
 def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label,
                         color_col=None, template='plotly_white', orientation=None,
                         barmode=None, nbinsx_hist=None, text_auto=False,
