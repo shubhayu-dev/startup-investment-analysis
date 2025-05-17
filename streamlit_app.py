@@ -9,6 +9,8 @@ from dotenv import load_dotenv # For loading environment variables from a .env f
 import numpy as np # For numerical operations, often used with pandas
 import streamlit.components.v1 as components # For embedding HTML components
 
+st.set_page_config(layout="wide", page_title="Startup Funding India")
+
 # Load environment variables from .env file (e.g., API keys)
 load_dotenv()
 # Default theme for the application, can be overridden by user selection
@@ -207,6 +209,8 @@ def load_and_clean_data(file_path: str) -> pd.DataFrame:
         st.error(f"An unexpected error occurred during data loading/cleaning: {e}"); 
         return pd.DataFrame()
 
+st.subheader("Direct Plotly Express Histogram Test")
+
 
 def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label,
                         color_col=None, template='plotly_white', orientation=None,
@@ -242,11 +246,24 @@ def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label,
     try:
         effective_title = title if title and title.strip() != "" else None
 
+        chart_labels = {}
+        if x_col: # Only add if x_col is not None
+            chart_labels[x_col] = x_label
+        
+        # For y_col, only add if y_col is actually specified and not None.
+        # For a 1D histogram, the y-axis label is often 'count'.
+        # Your fig.update_yaxes(title_text=y_label) will handle setting the y-axis title later anyway.
+        if y_col:
+            chart_labels[y_col] = y_label
+        
+        if color_col: # Only add if color_col is not None
+            chart_labels[color_col] = color_col # Or a more descriptive label if you have one, e.g., chart_labels[color_col] = f"Legend by {color_col}"
+
         fig_args = {
             'data_frame': data,
             'x': x_col,
-            'y': y_col, # y_col can be None, it will be filtered out by fig_args_cleaned if None
-            'labels': {x_col: x_label, y_col: y_label, color_col: color_col or ''},
+            'y': y_col,
+            'labels': chart_labels, # Use the carefully constructed chart_labels
             'title': effective_title,
             'color': color_col,
             'template': template,
@@ -293,7 +310,6 @@ def create_plotly_chart(chart_func, data, x_col, y_col, title, x_label, y_label,
 
 # --- Main Application ---
 def main():
-    st.set_page_config(layout="wide", page_title="Startup Funding India")
 
     # --- Theme Selection Logic ---
     if 'selected_theme' not in st.session_state:
@@ -544,19 +560,37 @@ def main():
                                               template=plotly_template, text_auto='.2s')
                     if fig: st.plotly_chart(fig, use_container_width=True)
 
-            st.markdown("---") # Separator
-            # Distribution of Funding Amounts (Histogram)
             st.markdown("###### Distribution of Funding Amounts (Log Scale for X-axis)")
-            # Filter for amounts > $1000 for a more meaningful log-scale histogram
-            funding_for_hist = filtered_df[filtered_df['amount_in_usd'] > 1000]['amount_in_usd'] 
-            if not funding_for_hist.empty:
-                fig_hist = create_plotly_chart(px.histogram, funding_for_hist.to_frame(), x_col='amount_in_usd', y_col=None, # y_col=None for 1D histogram
-                                               title=None, x_label="Funding Amount (USD)", y_label="Number of Deals",
-                                               template=plotly_template, log_x=True, nbinsx_hist=50) # log_x for skewed data, suggest 50 bins
-                if fig_hist:
-                    st.plotly_chart(fig_hist, use_container_width=True)
-            else: 
-                st.info("Not enough data points (with funding > $1000) to display funding amount distribution for the current filters.")
+
+            # Filter for amounts > $1000 for a more meaningful log-scale visualization
+            funding_for_viz = filtered_df[filtered_df['amount_in_usd'] > 1000]
+
+            if not funding_for_viz.empty and len(funding_for_viz['amount_in_usd'].unique()) > 1:
+                
+                # Use a box plot instead - this works even when all values are the same
+                fig = px.box(
+                    funding_for_viz,
+                    y='amount_in_usd',
+                    log_y=True,  # Keep the log scale
+                    points="all",  # Show all points
+                    labels={"amount_in_usd": "Funding Amount (USD)"},
+                    template=plotly_template
+                )
+                
+                fig.update_layout(
+                    showlegend=False,
+                    height=300,  # Adjust height as needed
+                    yaxis_title="Funding Amount (USD)",
+                    xaxis_title=""
+                )
+                
+                # Hide the x-axis ticks since they're not meaningful for a single box plot
+                fig.update_xaxes(showticklabels=False)
+                
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("Not enough unique data points (with funding > $1000) to display funding amount distribution for the current filters.")
+        
         
         # --- Tab 3: Investor Activity ---
         # This tab shows top funded startups and top investors for the current filters.
